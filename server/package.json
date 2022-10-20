@@ -1,0 +1,13 @@
+{
+  "dependencies": {
+    "alchemy-sdk": "^2.1.1",
+    "express": "^4.18.2"
+  },
+  "scripts": {
+    "start": "node server/index.js",
+    "build": "cd client && npm install && npm run build"
+  },
+  "engines": {
+    "node": "18.8.0"
+  }
+}
