@@ -6,7 +6,8 @@ WORKDIR /srv/app/server
 
 COPY package.json /srv/app/server
 
-RUN yarn install
+# RUN yarn install
+RUN npm install
 
 COPY . /srv/app/server
 

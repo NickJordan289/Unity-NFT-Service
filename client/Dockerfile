@@ -2,10 +2,17 @@ FROM node:19.0.0-alpine3.16 as build
 
 WORKDIR /app
 
+# install app dependencies
+COPY package.json ./
+
+RUN yarn install
+
 COPY . .
 
-RUN yarn install && yarn build
 ENTRYPOINT ["yarn", "start"]
+
+# RUN yarn install && yarn build
+# ENTRYPOINT ["yarn", "start"]
 # # nginx state for serving content
 # FROM nginx:alpine
 # # Set working directory to nginx asset directory

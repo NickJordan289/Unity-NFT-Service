@@ -6,6 +6,7 @@ services:
   #########################
   server:
     build: ./server
+    image: web3testing.azurecr.io/unitynftservice-server:latest
     expose:
       - ${APP_SERVER_PORT}
     environment:
@@ -13,8 +14,6 @@ services:
       APP_SERVER_PORT: ${APP_SERVER_PORT}
     ports:
       - ${APP_SERVER_PORT}:${APP_SERVER_PORT}
-    volumes:
-      - ./server:/srv/app/server
     command: ${NODE_COMMAND:-node} index.js
 
     ##########################
@@ -23,6 +22,7 @@ services:
 
   client:
     build: ./client
+    image: web3testing.azurecr.io/unitynftservice-client:latest
     environment:
       - REACT_APP_PORT=${REACT_APP_PORT}
     expose:
@@ -31,3 +31,4 @@ services:
       - ${REACT_APP_PORT}:${REACT_APP_PORT}
     links:
       - server
+    command: yarn start
