@@ -1,27 +1,32 @@
+import { DarkMode } from "@chakra-ui/color-mode";
 import { Box, ChakraProvider } from "@chakra-ui/react";
 import { extendTheme, type ThemeConfig } from "@chakra-ui/react";
 import { Outlet } from "react-router-dom";
 
-const theme = extendTheme({
+export const config: ThemeConfig = {
   initialColorMode: "dark",
   useSystemColorMode: false,
+};
+
+const theme = extendTheme({
+  config,
   colors: {
     metamask: {
       100: "#F6851B",
     },
     metamask_gray: {
-        100: "#393E46"
-    }
+      100: "#393E46",
+    },
   },
   components: {
     Modal: {
-        baseStyle: {
-            dialog: {
-                bg: "metamask_gray.100",
-                color: "white"
-            }
-        }
-    }
+      baseStyle: {
+        dialog: {
+          bg: "metamask_gray.100",
+          color: "white",
+        },
+      },
+    },
   },
   styles: {
     global: {
@@ -35,7 +40,9 @@ const theme = extendTheme({
 export default function Layout() {
   return (
     <ChakraProvider theme={theme}>
-      <Outlet />
+      <DarkMode>
+        <Outlet />
+      </DarkMode>
     </ChakraProvider>
   );
 }

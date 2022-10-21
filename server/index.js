@@ -2,7 +2,7 @@ const path = require("path");
 const express = require("express");
 const alchemy2 = require("alchemy-sdk");
 
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.APP_SERVER_PORT || 4000;
 
 const app = express();
 const settings = {

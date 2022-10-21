@@ -8,6 +8,6 @@
     "build": "cd client && npm install && npm run build"
   },
   "engines": {
-    "node": "18.8.0"
+    "node": "19.0.0"
   }
 }

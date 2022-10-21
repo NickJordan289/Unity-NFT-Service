@@ -2,8 +2,9 @@
   "name": "metamaskreact",
   "version": "0.1.0",
   "private": true,
-  "proxy": "http://localhost:3001",
+  "proxy": "http://server:4000",
   "dependencies": {
+    "@chakra-ui/color-mode": "^2.1.9",
     "@chakra-ui/react": "^2.3.6",
     "@emotion/react": "^11.10.4",
     "@emotion/styled": "^11.10.4",
