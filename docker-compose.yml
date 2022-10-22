@@ -31,4 +31,3 @@ services:
       - ${REACT_APP_PORT}:${REACT_APP_PORT}
     links:
       - server
-    command: yarn start
