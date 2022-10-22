@@ -11,9 +11,6 @@ const settings = {
 };
 const alchemy = new alchemy2.Alchemy(settings);
 
-// Have Node serve the files for our built React app
-app.use(express.static(path.resolve(__dirname, "../client/build")));
-
 app.get("/api", (req, res) => {
   const nfts = alchemy.nft.getNftsForOwner(req.query.account).then(
     (nfts) => {
@@ -27,11 +24,6 @@ app.get("/api", (req, res) => {
 
 app.get("/login", (req, res) => {
   return "keytosign";
-});
-
-// All other GET requests not handled before will return our React app
-app.get("*", (req, res) => {
-  res.sendFile(path.resolve(__dirname, "../client/build", "index.html"));
 });
 
 app.listen(PORT, () => {

@@ -51,34 +51,36 @@ Nonce: ${nonce}
 Issued At: ${new Date().toISOString()}`;
 
         // Sign the phrase and get signature
-        web3.eth.personal
+        let signature = await web3.eth.personal
           .sign(text, accounts[0], "")
           .then((signature) => {
-            fetch(
-              `${redirect_uri}?signature=${signature}&nonce=${nonce}&address=${accounts[0]}`
-            );
-          })
-          .then(() => {
-            setLoadingText("Finding NFT's.");
-
-            fetch(`/api?account=${accounts[0]}`)
-              .then((res) => res.json())
-              .then((nfts) => {
-                setLoadingText(`Found ${nfts.length}.`);
-                // wait 2 seconds
-                setTimeout(() => {
-                  onClose();
-                  toast({
-                    title: "Wallet Connected.",
-                    description: "You may now close this window.",
-                    status: "success",
-                    duration: 9000,
-                    isClosable: true,
-                  });
-                  setIsDone(true);
-                }, 1500);
-              });
+            return signature;
           });
+          console.log(signature);
+          console.log(`${redirect_uri}?signature=${signature}&nonce=${nonce}&address=${accounts[0]}`);
+        window.location.replace(`${redirect_uri}?signature=${signature}&nonce=${nonce}&address=${accounts[0]}`);
+
+        // .then(() => {
+        //   setLoadingText("Finding NFT's.");
+
+        //   fetch(`/api?account=${accounts[0]}`)
+        //     .then((res) => res.json())
+        //     .then((nfts) => {
+        //       setLoadingText(`Found ${nfts.length}.`);
+        //       // wait 2 seconds
+        //       setTimeout(() => {
+        //         onClose();
+        //         toast({
+        //           title: "Wallet Connected.",
+        //           description: "You may now close this window.",
+        //           status: "success",
+        //           duration: 9000,
+        //           isClosable: true,
+        //         });
+        //         setIsDone(true);
+        //       }, 1500);
+        //     });
+        // });
       } else {
         // If the provider is not detected, detectEthereumProvider resolves to null
         console.log("Please install MetaMask!");
