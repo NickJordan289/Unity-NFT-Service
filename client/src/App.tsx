@@ -38,17 +38,16 @@ function App() {
         const nonce =
           Math.random().toString(36).substring(2, 15) +
           Math.random().toString(36).substring(2, 15);
+        const datetime = new Date().toISOString();
 
-        let text = `${
-          window.location.hostname
-        } wants you to sign in with your Ethereum account: 
+        let text = `${window.location.hostname} wants you to sign in with your Ethereum account: 
 ${accounts[0]}
-This won’t cost you any Ether. 
+This won't cost you any Ether. 
 
 URI: ${window.location.hostname}
 Chain ID: 1
 Nonce: ${nonce}
-Issued At: ${new Date().toISOString()}`;
+Issued At: ${datetime}`;
 
         // Sign the phrase and get signature
         let signature = await web3.eth.personal
@@ -56,31 +55,38 @@ Issued At: ${new Date().toISOString()}`;
           .then((signature) => {
             return signature;
           });
-          console.log(signature);
-          console.log(`${redirect_uri}?signature=${signature}&nonce=${nonce}&address=${accounts[0]}`);
-        window.location.replace(`${redirect_uri}?signature=${signature}&nonce=${nonce}&address=${accounts[0]}`);
 
-        // .then(() => {
-        //   setLoadingText("Finding NFT's.");
-
-        //   fetch(`/api?account=${accounts[0]}`)
-        //     .then((res) => res.json())
-        //     .then((nfts) => {
-        //       setLoadingText(`Found ${nfts.length}.`);
-        //       // wait 2 seconds
-        //       setTimeout(() => {
-        //         onClose();
-        //         toast({
-        //           title: "Wallet Connected.",
-        //           description: "You may now close this window.",
-        //           status: "success",
-        //           duration: 9000,
-        //           isClosable: true,
-        //         });
-        //         setIsDone(true);
-        //       }, 1500);
-        //     });
-        // });
+        await fetch("http://localhost:4000/validateWalletLogin", {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            address: accounts[0],
+            message: text,
+            signature: signature,
+          }),
+        })
+          .then((response) => {
+            return response.json();
+          })
+          .then((data) => {
+            if (data.success) {
+              const sessionId = data.sessionId;
+              document.cookie = `sessionId=${sessionId}; path=/`;
+              window.location.href = `${redirect_uri}?sessionId=${sessionId}`;
+            } else {
+              toast({
+                title: "Error",
+                description: "Something went wrong. Try again.",
+                status: "error",
+                duration: 9000,
+                isClosable: true,
+              });
+              onClose();
+            }
+          });
       } else {
         // If the provider is not detected, detectEthereumProvider resolves to null
         console.log("Please install MetaMask!");

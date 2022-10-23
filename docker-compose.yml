@@ -12,6 +12,8 @@ services:
     environment:
       API_HOST: ${API_HOST}
       APP_SERVER_PORT: ${APP_SERVER_PORT}
+      COSMOS_ENDPOINT: ${COSMOS_ENDPOINT}
+      COSMOS_KEY: ${COSMOS_KEY}
     ports:
       - ${APP_SERVER_PORT}:${APP_SERVER_PORT}
     command: ${NODE_COMMAND:-node} index.js
@@ -28,6 +30,7 @@ services:
     expose:
       - ${REACT_APP_PORT}
     ports:
+      - 80:80
       - ${REACT_APP_PORT}:${REACT_APP_PORT}
     links:
       - server
