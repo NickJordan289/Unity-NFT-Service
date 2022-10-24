@@ -43,7 +43,7 @@ const settings = {
 };
 const alchemy = new Alchemy(settings);
 
-app.get("/api/nfts", (req, res) => {
+app.get("/nfts", (req, res) => {
   const nfts = alchemy.nft.getNftsForOwner(req.query.account).then(
     async (nfts) => {
       await container.items.upsert({
@@ -70,7 +70,7 @@ app.get("/login", async (req, res) => {
   return "keytosign";
 });
 
-app.post("/api/validateWalletLogin", async (req, res) => {
+app.post("/validateWalletLogin", async (req, res) => {
   const { address, message, signature } = req.body;
 
   let signedMessage =

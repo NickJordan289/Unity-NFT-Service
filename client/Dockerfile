@@ -10,11 +10,11 @@ RUN yarn install && yarn build
 FROM nginx:alpine
 
 COPY nginx.conf /etc/nginx/nginx.conf
-# Set working directory to nginx asset directory
-WORKDIR /usr/share/nginx/html
-# Remove default nginx static assets
-RUN rm -rf ./*
+
+## Remove default nginx index page
+RUN rm -rf /etc/nginx/html/*
 # Copy static assets from builder stage
-COPY --from=build /app/build .
+COPY --from=build /app/build /etc/nginx/html
+
 # Containers run nginx with global directives and daemon off
 ENTRYPOINT ["nginx", "-g", "daemon off;"]
