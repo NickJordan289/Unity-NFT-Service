@@ -56,7 +56,7 @@ Issued At: ${datetime}`;
             return signature;
           });
 
-        await fetch("http://localhost:4000/validateWalletLogin", {
+        await fetch("/api/validateWalletLogin", {
           method: "POST",
           headers: {
             Accept: "application/json",

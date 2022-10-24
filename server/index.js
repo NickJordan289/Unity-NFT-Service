@@ -43,31 +43,36 @@ const settings = {
 };
 const alchemy = new Alchemy(settings);
 
-app.get("/nfts", (req, res) => {
-  const nfts = alchemy.nft.getNftsForOwner(req.query.account).then(
-    async (nfts) => {
-      await container.items.upsert({
-        id: req.query.account,
-        account: req.query.account,
-        ownedNfts: nfts.ownedNfts,
-      });
-      res.json(nfts.ownedNfts);
-    },
-    (err) => {
-      res.json(err);
-    }
-  );
-});
+app.get("/nfts", async (req, res) => {
+  const { sessionId } = req.query;
 
-app.get("/login", async (req, res) => {
-  const { account, signature } = req.query;
-  await container.items.upsert({
-    id: account,
-    account: account,
-    ownedNfts: [],
-  });
+  const query = {
+    query: `SELECT c.id
+    FROM c
+    JOIN s IN c.sessions
+    WHERE s.sessionId = '${sessionId}'`,
+  };
 
-  return "keytosign";
+  const result = await container.items.query(query).fetchAll();
+  if (result.resources.length > 0) {
+    const account = result.resources[0].id;
+
+    const nfts = alchemy.nft.getNftsForOwner(account).then(
+      async (nfts) => {
+        res.json(nfts.ownedNfts);
+        // await container.items.upsert({
+        //   id: account,
+        //   account: account,
+        //   ownedNfts: nfts.ownedNfts,
+        // });
+      },
+      (err) => {
+        res.json(err);
+      }
+    );
+  } else {
+    res.status(403).json([]);
+  }
 });
 
 app.post("/validateWalletLogin", async (req, res) => {
