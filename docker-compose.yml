@@ -1,36 +1,39 @@
 version: "3"
 
 services:
+  ##################################
+  # Setup client container
+  # Runs nginx and serves react app
+  ##################################
+  client:
+    build: ./client
+    image: web3testing.azurecr.io/unitynftservice-client:latest
+    environment:
+      - REACT_APP_PORT=${REACT_APP_PORT}
+    ports:
+      - 80:80
+    links:
+      - server
+
   #########################
   # Setup node container
   #########################
   server:
     build: ./server
     image: web3testing.azurecr.io/unitynftservice-server:latest
-    expose:
-      - ${APP_SERVER_PORT}
     environment:
       API_HOST: ${API_HOST}
       APP_SERVER_PORT: ${APP_SERVER_PORT}
-      COSMOS_ENDPOINT: ${COSMOS_ENDPOINT}
-      COSMOS_KEY: ${COSMOS_KEY}
-    ports:
-      - ${APP_SERVER_PORT}:${APP_SERVER_PORT}
+      MONGODB_CONNSTRING: mongodb://${MONGO_INITDB_ROOT_USERNAME}:${MONGO_INITDB_ROOT_PASSWORD}@mongodb
     command: ${NODE_COMMAND:-node} index.js
-
-    ##########################
-    # Setup client container
-    ##########################
-
-  client:
-    build: ./client
-    image: web3testing.azurecr.io/unitynftservice-client:latest
-    environment:
-      - REACT_APP_PORT=${REACT_APP_PORT}
-    expose:
-      - ${REACT_APP_PORT}
-    ports:
-      - 80:80
-      - ${REACT_APP_PORT}:${REACT_APP_PORT}
     links:
-      - server
+      - mongodb
+
+  ##########################
+  # Setup database container
+  ##########################
+  mongodb:
+    image: mongo:6.0.2
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}
