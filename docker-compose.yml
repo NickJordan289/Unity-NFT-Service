@@ -26,6 +26,8 @@ services:
       APP_SERVER_PORT: ${APP_SERVER_PORT}
       MONGODB_CONNSTRING: mongodb://${MONGO_INITDB_ROOT_USERNAME}:${MONGO_INITDB_ROOT_PASSWORD}@mongodb
     command: ${NODE_COMMAND:-node} index.js
+    ports:
+      - 4000:4000
     links:
       - mongodb
 
