@@ -1,5 +1,4 @@
 import React from "react";
-import "./App.css";
 import {
   Box,
   Button,
@@ -11,18 +10,24 @@ import {
   useToast,
   VStack,
 } from "@chakra-ui/react";
-import metamaskfox from "./metamask-fox.svg";
-import LoadingModal from "./LoadingModal";
 import Web3 from "web3";
+import MetaMaskOnboarding from "@metamask/onboarding";
+
+// import metamaskfox from "../images/metamask-fox.svg";
+import metamaskfox from "../images/metamask-fox.png";
+import LoadingModal from "../components/LoadingModal";
+import "./App.css";
+
 function App() {
+  const toast = useToast();
   const params = new URLSearchParams(window.location.search);
   const redirect_uri = params.get("redirect_uri") || "http://localhost:8001";
-  const toast = useToast();
-  const [loadingText, setLoadingText] = React.useState("Authorize Connection.");
-  const [isDone, setIsDone] = React.useState(false);
 
-  const { isOpen, onOpen, onClose } = useDisclosure();
   const web3 = new Web3(Web3.givenProvider);
+  const onboarding = new MetaMaskOnboarding();
+
+  const [loadingText, setLoadingText] = React.useState("Authorize Connection.");
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   async function onboard() {
     setLoadingText("Authorize Connection.");
@@ -30,11 +35,10 @@ function App() {
     try {
       if (window.ethereum) {
         let eth = window.ethereum;
-        // Will open the MetaMask UI
-        // You should disable this button while the request is pending!
+
         // eslint-disable-next-line no-undef
         var accounts = await eth.request({ method: "eth_requestAccounts" });
-        setLoadingText("Sign Message.");
+
         const nonce =
           Math.random().toString(36).substring(2, 15) +
           Math.random().toString(36).substring(2, 15);
@@ -50,12 +54,14 @@ Nonce: ${nonce}
 Issued At: ${datetime}`;
 
         // Sign the phrase and get signature
+        setLoadingText("Sign Message.");
         let signature = await web3.eth.personal
           .sign(text, accounts[0], "")
           .then((signature) => {
             return signature;
           });
 
+        setLoadingText("Validating signature.");
         await fetch("/api/validateWalletLogin", {
           method: "POST",
           headers: {
@@ -88,8 +94,7 @@ Issued At: ${datetime}`;
             }
           });
       } else {
-        // If the provider is not detected, detectEthereumProvider resolves to null
-        console.log("Please install MetaMask!");
+        onboarding.startOnboarding();
       }
     } catch (error) {
       console.error(error);
@@ -105,44 +110,32 @@ Issued At: ${datetime}`;
       />
       <VStack textAlign={"center"} marginLeft={200} marginRight={200}>
         <Box p={5}>
-          {isDone ? (
-            <Text fontSize="26px">
-              You can now return to the application that brought you here.
+          <Box maxWidth="700px">
+            <Heading fontSize="40px">Connect with MetaMask</Heading>
+            <Text fontSize="26px" lineHeight="36px">
+              Press the connect button and follow the prompts to share your
+              NFT's with the application that brought you here.
             </Text>
-          ) : (
-            <>
-              <Box maxWidth="700px">
-                <Heading fontSize="40px">Connect with MetaMask</Heading>
-                <Text fontSize="26px" lineHeight="36px">
-                  Press the connect button and follow the prompts to share your
-                  NFT's with the application that brought you here.
-                </Text>
-              </Box>
-              <ButtonGroup
-                isAttached
-                variant="outline"
-                onClick={onboard}
-                paddingTop="5px"
-              >
-                <Button
-                  borderColor="metamask.100"
-                  paddingLeft={2}
-                  paddingRight={2}
-                >
-                  <Image src={metamaskfox} boxSize="25px" />
-                </Button>
-                <Button
-                  borderColor="metamask.100"
-                  paddingLeft={2}
-                  paddingRight={2}
-                  fontWeight="bold"
-                >
-                  {" "}
-                  Connect Wallet
-                </Button>
-              </ButtonGroup>
-            </>
-          )}
+          </Box>
+          <ButtonGroup
+            isAttached
+            variant="outline"
+            onClick={onboard}
+            paddingTop="5px"
+          >
+            <Button borderColor="metamask.100" paddingLeft={2} paddingRight={2}>
+              <Image src={metamaskfox} boxSize="25px" />
+            </Button>
+            <Button
+              borderColor="metamask.100"
+              paddingLeft={2}
+              paddingRight={2}
+              fontWeight="bold"
+            >
+              {" "}
+              Connect Wallet
+            </Button>
+          </ButtonGroup>
         </Box>
       </VStack>
     </>

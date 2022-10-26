@@ -22,12 +22,12 @@ services:
     build: ./server
     image: web3testing.azurecr.io/unitynftservice-server:latest
     environment:
-      API_HOST: ${API_HOST}
       APP_SERVER_PORT: ${APP_SERVER_PORT}
       MONGODB_CONNSTRING: mongodb://${MONGO_INITDB_ROOT_USERNAME}:${MONGO_INITDB_ROOT_PASSWORD}@mongodb
+      ALCHEMY_API_KEY: ${ALCHEMY_API_KEY}
     command: ${NODE_COMMAND:-node} index.js
     ports:
-      - 4000:4000
+      - ${APP_SERVER_PORT}:${APP_SERVER_PORT}
     links:
       - mongodb
 
