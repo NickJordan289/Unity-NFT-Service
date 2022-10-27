@@ -47,7 +47,7 @@ MONGO_INITDB_ROOT_USERNAME="AzureDiamond"
 MONGO_INITDB_ROOT_PASSWORD="hunter2"
 
 # used to set fqdn when deploying to azure
-ACI_DOMAIN_LABBEL="unitynftservice" 
+ACI_DOMAIN_LABEL="unitynftservice" 
 ```
 
 ## Deploying to Azure Container Instance
