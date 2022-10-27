@@ -7,7 +7,8 @@ services:
   ##################################
   client:
     build: ./client
-    image: web3testing.azurecr.io/unitynftservice-client:latest
+    image: nickjordan289/unitynftservice-client:latest
+    domainname: ${ACI_DOMAIN_LABEL} # used to set fqdn when deploying to azure
     environment:
       - REACT_APP_PORT=${REACT_APP_PORT}
     ports:
@@ -20,7 +21,7 @@ services:
   #########################
   server:
     build: ./server
-    image: web3testing.azurecr.io/unitynftservice-server:latest
+    image: nickjordan289/unitynftservice-server:latest
     environment:
       APP_SERVER_PORT: ${APP_SERVER_PORT}
       MONGODB_CONNSTRING: mongodb://${MONGO_INITDB_ROOT_USERNAME}:${MONGO_INITDB_ROOT_PASSWORD}@mongodb
