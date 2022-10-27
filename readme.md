@@ -6,6 +6,7 @@ This application stack provides a quick way to fetch a users NFT's and associate
 
 All you need to do is forward the user to your deployed instance and have them link their wallet.
 
+> Disclaimer: An Alchemy.com API Key is required to fetch an address' NFT's
 ---
 
 ##### Table of Contents  
@@ -48,7 +49,7 @@ The Express api handles the authentication and nft fetching processes. After val
 This application stack utilizes MongoDB for storing session tokens and caching responses.
 
 # Getting Started - Deployment
-> The Alchemy.com sdk is used to fetch an address' NFT's
+> Disclaimer: An Alchemy.com API Key is required to fetch an address' NFT's
 1. Setup your .env configuration as described below
 2. Run container group using ```docker compose up```
 
